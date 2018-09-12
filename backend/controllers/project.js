@@ -54,6 +54,58 @@ var controller = {
             message: "Metodo saveProject"
         })
 
+    },
+
+    getProlect: function(req, res){
+
+        var projectId = req.params.id;
+
+        if(projectId == null){
+            return res.status(404).send({message: 'El proyecto no existe.'});
+        }
+        projectModel.findById(projectId, (error, project)=>{
+            if(error){
+                return res.status(500).send({message: 'Error al devolver los datos'});
+            }
+            if(!project){
+                return res.status(404).send({message: 'El proyecto no existe.'});
+            }
+
+            return res.status(200).send({project: project});
+        });
+
+    },
+
+    getAllProjects: function(req, res){
+
+        projectModel.find({}).sort('-year').exec((error, projects) => {
+            if(error){
+                return res.status(500).send({message: 'Error al devolver los datos'});
+            }
+            if(!projects){
+                return res.status(404).send({message: 'El proyecto no existe.'});
+            }
+
+            return res.status(200).send({projects: projects});
+        })
+    },
+
+    updateProject: function(req, res){
+
+        var projectId = req.params.id; 
+        var update = req.body;
+
+        projectModel.findByIdAndUpdate(projectId, update, (error, projectUpdate)=>{
+            if(error){
+                return res.status(500).send({message: 'Error al devolver los datos'});
+            }
+            if(!projectUpdate){
+                return res.status(404).send({message: 'El proyecto no existe.'});
+            }
+
+            return res.status(200).send({project: projectUpdate});
+        });
+
     }
 };
 
